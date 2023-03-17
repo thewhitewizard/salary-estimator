@@ -7,6 +7,7 @@ import (
 	"salary-estimator/internal/model"
 	"salary-estimator/internal/utils"
 	"strconv"
+	"strings"
 )
 
 const (
@@ -26,6 +27,10 @@ func init() {
 	inDirectory = os.Getenv("IEXEC_IN")
 	datasetName = os.Getenv("IEXEC_DATASET_FILENAME")
 	outDirectory = os.Getenv("IEXEC_OUT")
+
+	if !strings.HasSuffix(inDirectory, "/") {
+		inDirectory += "/"
+	}
 
 	_, err := os.Stat(inDirectory + datasetName)
 	utils.CheckOrRaiseError(outDirectory, err)
