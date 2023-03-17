@@ -1,5 +1,7 @@
 *.txt
 *.csv
-*.json
+iexec.json
+deployed.json
+chain.json
 *.zip
 salary-estimator
