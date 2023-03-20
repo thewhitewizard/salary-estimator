@@ -1,10 +1,10 @@
-# Salary Prediction dApp
+# Salary Estimator dApp
 
 This is a decentralized application (dApp) that predicts the salary of a job based on a dataset. The dApp is designed to run on the iExec platform and uses trusted execution 
 environments (TEEs) to ensure that the computation is secure and private.
 
 
-⚠️ This app was made in order to test the iExec stack, more than to really predict a possible salary 
+⚠️ This app was made in order to test the iExec stack, it's a POC. 
 
 
 ## Dataset
@@ -24,12 +24,12 @@ Sample :
 DEVOPS,2,PROVINCE,SELF-TAUGHT,33948
 CLOUD_ARCHITECT,2,PARIS,ENGINEERING_SCHOOL,54450
 ```
-I
+
 Available data: 
 
- - JOBS : DEV_GOLANG,DEV_NODEJS,DEV_JAVA,CPP,C,ARCHITECT,DEV_PHP,DEV_PYTHON,FULL_STACK,FRONTEND,BACKEND,DEVOPS,CLOUD_ARCHITECT
- - CITY : PARIS, PROVINCE
- - EDUCATION :ENGINEERING_SCHOOL,COMPUTER_SCIENCE_SCHOOL,MASTER,BACHELOR
+ - JOBS: DEV_GOLANG,DEV_NODEJS,DEV_JAVA,CPP,C,ARCHITECT,DEV_PHP,DEV_PYTHON,FULL_STACK, FRONTEND,BACKEND,DEVOPS,CLOUD_ARCHITECT
+ - CITY: PARIS, PROVINCE
+ - EDUCATION: ENGINEERING_SCHOOL,COMPUTER_SCIENCE_SCHOOL,MASTER,BACHELOR
 
 
 ## Confidential Computing and TEE
