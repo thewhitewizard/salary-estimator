@@ -17,6 +17,3 @@ lint:
 tidy:
 	go mod tidy
 
-execute:
-	IEXEC_IN=/home/fcordier/iexecdev/predigo IEXEC_DATASET_FILENAME=ds.csv IEXEC_OUT=/home/fcordier/iexecdev/predigo ./salary-estimator DEV_NODEJS PARIS BACHELOR 14
-
