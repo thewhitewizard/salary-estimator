@@ -108,6 +108,7 @@ CLOUD_ARCHITECT,2,PARIS,ENGINEERING_SCHOOL,54450
 
 To make the dataset available to the dApp, follow the steps described here https://docs.iex.ec/for-developers/confidential-computing/sgx-encrypted-dataset
 
+An extract of the complete dataset is available in this repo as an sample
 
 
 ### Run this dApp
@@ -138,20 +139,17 @@ DEV_NODEJS PARIS BACHELOR 14
 ```
 
 
-
 Now to run the app juste execute
 
 ``` shell
 exec app run 0xe09915E89Ba50f1C7F7EaA302745A7F8fD5Ea110 --secret 1=my-job --secret 2=my-city --secret 3=my-education --secret 4=my-experience  --tag tee,scone --dataset 0x4850b6e663A079F0022eC6D66EaE75FDe67d593f --watch
 ```
 
-
 ⚠️ You must respect the assignment of the secrets, i.e. secret 1 is always the job, secret 2 the city, secret 3 the degree and finally secret 4 the number of years of experience 
 
 
-
-
 Sample of output :
+
 ``` shell
 Using chain bellecour [chainId: 134]
 ? Using wallet UTC--2023-02-21T10-37-09.156000000Z--6c1b288403eB6396aCed25063b2942A7448c594D
@@ -194,8 +192,9 @@ iexec task show 0x1f7a2db96bc79aa0c4b70842f9e280d81235fde307188f640fb463e087b71c
 ``` 
 
 Unzip result file
+
 ``` shell
-unzip my-app-result.zip             
+unzip my-app-resuxxxlt.zip             
 ```
 
 Display the result and you can go negotiate with your boss 😃

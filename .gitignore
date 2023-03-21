@@ -1,5 +1,5 @@
 *.txt
-*.csv
+ds.csv
 iexec.json
 iexec.json.old
 deployed.json
