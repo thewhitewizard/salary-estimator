@@ -32,14 +32,6 @@ cd salary-estimator
 iexec init --skip-wallet
 ```
 
-
-### Init the app
-
-
-``` Shell
-docker build -t <dockerusername>/salary-estimator:<tag> .
-```
-
 ### Build the App 
 
 This module is written in Golang. A devcontainer is provided with the project making the developpement easy, but it is only if you need to modify the application sources.
@@ -47,7 +39,7 @@ This module is written in Golang. A devcontainer is provided with the project ma
 **Step 1: Build and push the docker image**
 
 ``` Shell
-docker build -t <dockerusername>/salary-estimator:<tag> .
+docker build -t <dockerusername>/salary-estimator:X.Y.Z .
 ```
 
 In order to benefit from the computation confidentiality offered by Trusted Execution Environnements, we will use the scon technology (https://docs.iex.ec/for-developers/confidential-computing/create-your-first-sgx-app)
@@ -61,7 +53,7 @@ After, you can execute
 
 Now you can push the app :
 ``` Shell
-docker push <dockerusername>/salary-estimator:tee-debug
+docker push <dockerusername>/salary-estimator:X.Y.Z-tee-debug
 ```
 
 
@@ -77,10 +69,10 @@ according to the documentation , you have to get the fingerprint of your image a
 
 ``` Shell
 # mrenclave fingerprint
-docker run -it --rm -e SCONE_HASH=1 <dockerusername>/salary-estimator:tee-debug 
+docker run -it --rm -e SCONE_HASH=1 <dockerusername>/salary-estimator:X.Y.Z-tee-debug 
 
 #docker image fingerprint
-docker pull  <dockerusername>/salary-estimator:tee-debug | grep "Digest: sha256:" | sed 's/.*sha256:/0x/' 
+docker pull  <dockerusername>/salary-estimator:X.Y.Z-tee-debug | grep "Digest: sha256:" | sed 's/.*sha256:/0x/' 
 ```
 
 Edit iexec.jon and update values for *multiaddr, checksum and fingerprint*
@@ -120,10 +112,96 @@ To make the dataset available to the dApp, follow the steps described here https
 
 ### Run this dApp
 
-The application expects in argument the name of the desired job, followed by the location, then the level of study and finally the number of years of experience.
+To make the prediction, the dApp expects the name of the desired job, the location, the level of study and finally the number of years of experience.
+All this inputs must be set as requester secret.
 
-For example for a nodejs developer job, in Paris with a bachelor level and 14 years of experience
+
+``` Shell
+# push all secrets to the SMS
+iexec requester push-secret my-job --chain bellecour
+iexec requester push-secret my-city --chain bellecour
+iexec requester push-secret my-education --chain bellecour
+iexec requester push-secret my-experience --chain bellecour
+
+# check secrets are available on the SMS
+iexec requester check-secret my-job --chain bellecour
+iexec requester check-secret my-city --chain bellecour
+iexec requester check-secret my-education --chain bellecour
+iexec requester check-secret my-experience --chain bellecour
+```
+
+
+For example for a nodejs developer job, in Paris with a bachelor level and 14 years of experience, you can set 
+
+```
+DEV_NODEJS PARIS BACHELOR 14
+```
+
+
+
+Now to run the app juste execute
 
 ``` shell
-exec app run 0x9535F5F413C764e76F2a1cf0f4e1526508B947BA --args "DEV_NODEJS PARIS BACHELOR 14"  --tag tee,scone --dataset 0x4850b6e663A079F0022eC6D66EaE75FDe67d593f
+exec app run 0xe09915E89Ba50f1C7F7EaA302745A7F8fD5Ea110 --secret 1=my-job --secret 2=my-city --secret 3=my-education --secret 4=my-experience  --tag tee,scone --dataset 0x4850b6e663A079F0022eC6D66EaE75FDe67d593f --watch
 ```
+
+
+⚠️ You must respect the assignment of the secrets, i.e. secret 1 is always the job, secret 2 the city, secret 3 the degree and finally secret 4 the number of years of experience 
+
+
+
+
+Sample of output :
+``` shell
+Using chain bellecour [chainId: 134]
+? Using wallet UTC--2023-02-21T10-37-09.156000000Z--6c1b288403eB6396aCed25063b2942A7448c594D
+Please enter your password to unlock your wallet [hidden]
+ℹ Using app 0xe09915E89Ba50f1C7F7EaA302745A7F8fD5Ea110
+ℹ Creating apporder
+ℹ Using dataset 0x4850b6e663A079F0022eC6D66EaE75FDe67d593f
+ℹ Creating datasetorder
+ℹ Using workerpool debug-v8-bellecour.main.pools.iexec.eth
+ℹ Fetching workerpoolorder from iExec Marketplace
+ℹ Creating requestorder
+? Do you want to spend 0.0 RLC to execute the following request: 
+app:        0xe09915E89Ba50f1C7F7EaA302745A7F8fD5Ea110 (0.0 RLC)
+dataset:    0x4850b6e663A079F0022eC6D66EaE75FDe67d593f (0.0 RLC)
+workerpool: 0xdb214a4A444D176e22030bE1Ed89dA1b029320f2 (0.0 RLC)
+params: 
+  iexec_result_storage_provider: ipfs
+  iexec_result_storage_proxy:    https://result.v8-bellecour.iex.ec
+  iexec_secrets: 
+    1: my-job
+    2: my-city
+    3: my-education
+    4: my-experience
+category:   0
+tag:        0x0000000000000000000000000000000000000000000000000000000000000003
+ Yes
+ℹ Deal submitted with dealid 0x3e6691fde07eddc1f85ee5f5b7d42961a092c1bb15744fa93a1a103bfecae123
+✔ App run successful:
+1/1 tasks completed:
+- Task idx 0 (0x1f7a2db96bc79aa0c4b70842f9e280d81235fde307188f640fb463e087b71c0f)
+```
+
+
+### Download the result
+
+From the previous task id
+
+``` shell
+iexec task show 0x1f7a2db96bc79aa0c4b70842f9e280d81235fde307188f640fb463e087b71c0f --download my-app-result
+``` 
+
+Unzip result file
+``` shell
+unzip my-app-result.zip             
+```
+
+Display the result and you can go negotiate with your boss 😃
+
+``` shell
+❯ cat result.txt
+you can expect a salary of 83835
+```
+

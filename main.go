@@ -6,21 +6,19 @@ import (
 	"os"
 	"salary-estimator/internal/model"
 	"salary-estimator/internal/utils"
-	"strconv"
 	"strings"
 )
 
-const (
-	nbArgs = 4
-)
-
 var (
-	inDirectory  string
-	datasetName  string
-	outDirectory string
+	inDirectory      string
+	datasetName      string
+	outDirectory     string
+	jobSecret        string
+	citySecret       string
+	educationSecret  string
+	experienceSecret float64
 
-	errMissingArguments = errors.New("missing arguments provided")
-	errBadArguments     = errors.New("bad arguments provided")
+	errCantReadSecret error = errors.New("can't read or missing secret")
 )
 
 func init() {
@@ -28,8 +26,21 @@ func init() {
 	datasetName = os.Getenv("IEXEC_DATASET_FILENAME")
 	outDirectory = os.Getenv("IEXEC_OUT")
 
+	jobSecret = utils.GetStringSecret(1)        //nolint: gomnd
+	citySecret = utils.GetStringSecret(2)       //nolint: gomnd
+	educationSecret = utils.GetStringSecret(3)  //nolint: gomnd
+	experienceSecret = utils.GetNumberSecret(4) //nolint: gomnd
+
+	if jobSecret == "" || citySecret == "" || educationSecret == "" || experienceSecret < 0 {
+		utils.CheckOrRaiseError(outDirectory, errCantReadSecret)
+	}
+
 	if !strings.HasSuffix(inDirectory, "/") {
 		inDirectory += "/"
+	}
+
+	if !strings.HasSuffix(outDirectory, "/") {
+		outDirectory += "/"
 	}
 
 	_, err := os.Stat(inDirectory + datasetName)
@@ -37,24 +48,11 @@ func init() {
 }
 
 func main() {
-	if len(os.Args) < nbArgs {
-		utils.CheckOrRaiseError(outDirectory, errMissingArguments)
-	}
-
-	job := os.Args[1]
-	city := os.Args[2]
-	education := os.Args[3]
-	exp, err := strconv.ParseFloat(os.Args[4], 64)
-
-	if err != nil {
-		utils.CheckOrRaiseError(outDirectory, errBadArguments)
-	}
-
 	model := model.NewSalaryModel()
-	err = model.LoadModelFromDataSetAndApplyFilter(inDirectory+datasetName, job, city, education)
+	err := model.LoadModelFromDataSetAndApplyFilter(inDirectory+datasetName, jobSecret, citySecret, educationSecret)
 	utils.CheckOrRaiseError(outDirectory, err)
 
-	prediction, err := model.Predict(exp)
+	prediction, err := model.Predict(experienceSecret)
 	utils.CheckOrRaiseError(outDirectory, err)
 	utils.CompleteTheTask(outDirectory, []byte(fmt.Sprint("you can expect a salary of ", prediction)))
 }

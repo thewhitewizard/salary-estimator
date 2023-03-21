@@ -3,8 +3,8 @@
 # declare an image name
 IMG_NAME="frederic1206/salary-estimator"
 
-IMG_FROM=${IMG_NAME}:0.1
-IMG_TO=${IMG_NAME}:tee-debug
+IMG_FROM=${IMG_NAME}:0.2
+IMG_TO=${IMG_NAME}:0.2-tee-debug
 
 SCONE_IMAGE="registry.scontain.com:5050/scone-production/iexec-sconify-image:5.7.5-v8"
 
